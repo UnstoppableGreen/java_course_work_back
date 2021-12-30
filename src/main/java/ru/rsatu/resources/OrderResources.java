@@ -1,26 +1,42 @@
 package ru.rsatu.resources;
 
-import io.vertx.core.json.JsonObject;
-import ru.rsatu.service.OrderService;
-import ru.rsatu.pojo.Clients;
-import ru.rsatu.pojo.Orders;
-import ru.rsatu.pojo.OrdersDetails;
-
-import java.sql.Date;
 import javax.inject.Inject;
-import javax.persistence.PostUpdate;
 import javax.transaction.Transactional;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.resteasy.annotations.jaxrs.FormParam;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
+
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import ru.rsatu.pojo.Items;
+import ru.rsatu.pojo.Orders;
+import ru.rsatu.pojo.OrdersDetails;
+import ru.rsatu.service.ClientService;
+import ru.rsatu.service.ItemService;
+import ru.rsatu.service.OrderService;
+import ru.rsatu.service.StatusService;
 @Path("/orders")
 public class OrderResources {
     @Inject
     OrderService os;
+    
+    @Inject
+    ClientService cs;
+    
+    @Inject
+    StatusService ss;
+    
+    @Inject
+    ItemService is;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -57,19 +73,50 @@ public class OrderResources {
         os.deleteOrder(orderID);
         return Response.ok().build();
     }
-        
+     
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getOrderInfo")
+    public Response getOrderInfo(@QueryParam("orderID") Long orderID){
+    	
+    	JsonObject json = new JsonObject();
+    	Orders order = new Orders();
+    	
+    	order=os.getOrderById(orderID);
+    	System.out.println("Смотрим инфу по заказу: \n"+order.toString());
+    	json.put("orderID", order.id);
+    	System.out.println("айди "+order.id);
+    	json.put("client",cs.getClientById(order.getClientID()).getName());
+    	System.out.println("клиент "+cs.getClientById(order.getClientID()).getName());
+    	json.put("status", ss.getStatusById(order.getStatusID()).getName());
+    	System.out.println("status "+ss.getStatusById(order.getStatusID()).getName());
+    	json.put("creationDate", order.getCreationDate());
+    	json.put("lastUpdateOn", order.getLastUpdateOn());
+    	System.out.println("Новый джейсон заполнен.");
+    	 JsonArray itemsStructures = new JsonArray();
+    	//JsonObject itemsStructures = new JsonObject();    	    	
+    	for (OrdersDetails detail : order.orderDetails) {
+    		System.out.println("Смотрим струкуру итема: \n"+is.getItemById(detail.getItemID()));
+    		itemsStructures.add(is.getStructure (is.getItemById(detail.getItemID())));
+    		
+    	}
+    	json.put("itemsStructures", itemsStructures);
+        return Response.ok(json).build();
+    }
+    
+    
     @PUT
     @Path("/newOrder")
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
-    public void newOrder(Orders order) {
+    public void newOrder(Orders order, @QueryParam("createRequest") Boolean createRequests) {
     	System.out.println("Попытка добавить заказ: \n"+order.toString());
     	    	 
     	for (OrdersDetails detail : order.orderDetails) {                    
             System.out.println("Внутри цикла: \n"+detail.toString());
             detail.order = order; 
     	} 
-    os.insertOrder(order);
+    os.insertOrder(order,createRequests);
     }
    
     @PUT
@@ -112,7 +159,7 @@ public class OrderResources {
     @Path("/updateOrder")
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
-    public void updateOrder1(Orders order) { 
+    public void updateOrder(Orders order) { 
     	System.out.println("Попытка обновить заказ: \n"+order.toString());
     	for (OrdersDetails detail : order.orderDetails) {
             System.out.println("Внутри цикла: \n"+detail.toString());

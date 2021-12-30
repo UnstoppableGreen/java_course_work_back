@@ -16,6 +16,8 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 @Entity
 public class Items extends PanacheEntity {
 	private String name;
+	private Long defaultSupplierID;
+	
 	@ManyToOne
 	@NotFound(action = NotFoundAction.IGNORE)
 	//@OnDelete(action = OnDeleteAction.NO_ACTION)
@@ -34,11 +36,19 @@ public class Items extends PanacheEntity {
 		this.name = name;
 	}
 
+	public Long getDefaultSupplierID() {
+		return defaultSupplierID;
+	}
+
+	public void setDefaultSupplierID(Long defaultSupplierID) {
+		this.defaultSupplierID = defaultSupplierID;
+	}
     @Override
     public String toString() {
         return "Item{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
+                ", defaultSupplierID=" + defaultSupplierID +
                 ", suppliers=" + suppliers +
                 ", ITEMDETAILS=" + itemDetails +
                 '}';

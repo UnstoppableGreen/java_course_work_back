@@ -23,7 +23,7 @@ public class ItemResources {
 
     @Inject
     ItemService os;
-
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getItems")
@@ -37,15 +37,6 @@ public class ItemResources {
         json.put("data", os.getItems(page));
         return Response.ok(json).build();
     }
-
-  /*  @PUT
-    @Path("/createItem")
-    @Transactional
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Items createItem(Items item) {
-        System.out.println("Попытка добавить деталь: \n"+item.toString());
-        return os.insertItem(item);
-    }*/
     
     @PUT
     @Path("/newItem")
@@ -65,10 +56,10 @@ public class ItemResources {
     @Transactional
    // @Consumes(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)	
     public Map<Items, Integer> getAtomics(@QueryParam("itemID") Long id ) {
        // System.out.println("Попытка добавить деталь: \n"+item.toString()); 
-        return os.getAtomicsFromItem(os.getItemById(id));
+        return os.getAtomicsFromItem(os.getItemById(id),1);
     	
     }
 

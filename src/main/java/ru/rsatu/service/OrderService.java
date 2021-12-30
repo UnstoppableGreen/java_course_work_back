@@ -1,8 +1,8 @@
 package ru.rsatu.service;
 
-import ru.rsatu.pojo.Clients;
-import ru.rsatu.pojo.Orders;
-import ru.rsatu.pojo.OrdersDetails;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -10,18 +10,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+import ru.rsatu.pojo.Items;
+import ru.rsatu.pojo.Orders;
+import ru.rsatu.pojo.OrdersDetails;
 
 @ApplicationScoped
 public class OrderService {
     @Inject
     EntityManager em;
+    @Inject
+    ShipmentsAndDeliveryService sads;
 
     @Transactional
     public Orders createOrder(Long clientID) {
@@ -37,22 +35,16 @@ public class OrderService {
 
     //вставка данных
     @Transactional
-    public Orders insertOrder(Orders order) {
+    public Orders insertOrder(Orders order, Boolean createRequests) {   	
     	em.merge(order);
         em.flush();
         em.clear();
+        if (createRequests) {
+        	sads.createRequests(order);
+        }
         return order;
     }
     
-    //вставка данных
-   /* @Transactional
-    public OrdersDetails insertDetail(OrdersDetails orderDetail) {
-        em.merge(orderDetail);
-        em.flush();
-        return orderDetail;
-    }*/
-    
-
     //обновление данных
     @Transactional
     public Orders updateOrder(Orders order) {
@@ -68,6 +60,14 @@ public class OrderService {
         em.merge(detail);
         em.flush();
         return detail;
+    }
+    
+    
+    public List<Items> getOrderDetails (Long orderID){ 
+    	List<Items> orderDetails = new ArrayList<>();		
+		Query query = em.createQuery(" select c from OrdersDetails c where order_id="+orderID);
+		orderDetails = query.getResultList();
+		return orderDetails;
     }
 
     //удаление данных

@@ -1,14 +1,14 @@
 package ru.rsatu.service;
 
-import ru.rsatu.pojo.Orders;
-import ru.rsatu.pojo.Suppliers;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
-import java.util.List;
+
+import ru.rsatu.pojo.Suppliers;
 
 @ApplicationScoped
 public class SuppliersService {

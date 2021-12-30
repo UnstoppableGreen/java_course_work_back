@@ -41,7 +41,7 @@ public class StatusService {
     //удаление данных
     @Transactional
     public void deleteStatus(Status status) {
-        Status s = getStatusById(status.getId());
+        Status s = getStatusById(status.getId().intValue());
         em.remove(s);
         em.flush();
     }
@@ -50,8 +50,8 @@ public class StatusService {
         return em.createQuery(" select s from Status s ", Status.class).getResultList();
     }
 
-    public Status getStatusById(Long id) {
-        Status status = em.find(Status.class, id);
+    public Status getStatusById(Integer integer) {
+        Status status = em.find(Status.class, integer);
         return status;
     }
 

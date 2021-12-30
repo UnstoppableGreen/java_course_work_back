@@ -8,7 +8,7 @@ public class Status {
     @Id
     @SequenceGenerator(name = "statusSeq", sequenceName = "status_id_seq", allocationSize = 1, initialValue = 1)
     @GeneratedValue(generator = "statusSeq")
-    private Long id;
+    private Integer id;
     private String name;
     private String description;
 
@@ -28,7 +28,7 @@ public class Status {
         this.name = name;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 }

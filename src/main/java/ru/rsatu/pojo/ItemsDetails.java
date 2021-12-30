@@ -28,7 +28,7 @@ public class ItemsDetails extends PanacheEntity {
     @JsonIgnore
     public Items item;
 
-  /*  @Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -40,7 +40,7 @@ public class ItemsDetails extends PanacheEntity {
         OrdersDetails other = (OrdersDetails) o;
 
         return Objects.equals(id, other.id);
-    }*/
+    }
 
     @Override
     public int hashCode() {

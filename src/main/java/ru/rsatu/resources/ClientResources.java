@@ -1,13 +1,18 @@
 package ru.rsatu.resources;
 
-import io.vertx.core.json.JsonObject;
-import ru.rsatu.service.ClientService;
-import ru.rsatu.pojo.Clients;
-import java.sql.Date;
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import io.vertx.core.json.JsonObject;
+import ru.rsatu.pojo.Clients;
+import ru.rsatu.service.ClientService;
 
 @Path("/client")
 public class ClientResources {
@@ -42,12 +47,6 @@ public class ClientResources {
         return Response.ok(sr.getClientById(clientID)).build();
     }
 
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/insertClient1")
-    public Response insertClient1(@QueryParam("name") String name,@QueryParam("contacts") String contacts,@QueryParam("address") String address,@QueryParam("date") Date date){
-        return Response.ok(sr.insertClient1(sr.createClient(name, contacts, address,date))).build();
-    }
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

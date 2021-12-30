@@ -15,12 +15,6 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 @Entity
 public class OrdersDetails extends PanacheEntity {
 
-	
-  /*  @Id
-    @SequenceGenerator(name = "detailSeq", sequenceName = "detail_id_seq", allocationSize = 1, initialValue = 1)
-    @GeneratedValue(generator = "detailSeq")
-    private Long detailID;*/
-	
     private Long itemID;
     private Integer qty;
     private String comments;
@@ -29,7 +23,7 @@ public class OrdersDetails extends PanacheEntity {
     @JsonIgnore
     public Orders order;
 
-  /*  @Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -41,7 +35,7 @@ public class OrdersDetails extends PanacheEntity {
         OrdersDetails other = (OrdersDetails) o;
 
         return Objects.equals(id, other.id);
-    }*/
+    }
 
     @Override
     public int hashCode() {

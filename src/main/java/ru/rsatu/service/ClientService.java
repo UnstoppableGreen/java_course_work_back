@@ -27,13 +27,6 @@ public class ClientService {
 
     //вставка данных
     @Transactional
-    public Clients insertClient1(Clients cl) {
-        em.merge(cl);
-        em.flush();
-        return cl;
-    }
-    //вставка данных
-    @Transactional
     public Clients insertClient(Clients cl) {
         em.merge(cl);
         em.flush();
@@ -62,11 +55,8 @@ public class ClientService {
     }
 
     public int getCountClients() {
-        //Query query = em.createQuery(" select count(name) from Clients ").getResultList();
-        //List listResult = query.getResultList();
         Number number = (Number) em.createQuery(" select count(name) from Clients ").getResultList().get(0);
-        //System.out.println(number.intValue());
-        return number.intValue() ;//(int) (em.createQuery(" select c from Clients с ").getResultList().size());
+        return number.intValue();
     }
 
     public List<Clients> getClientsPage(int page) {
@@ -76,7 +66,6 @@ public class ClientService {
 
         List<Clients> listClients = query.getResultList();
         return listClients;
-        //return em.createQuery(" select c from Clients c ", Clients.class).getResultList();
     }
 
     public Clients getClientById(Long clientID) {

@@ -21,7 +21,7 @@ import ru.rsatu.service.SuppliersService;
 
 import java.util.List;
 
-@Path("/ShipmentsAndDeliveryResources")
+@Path("/ShipmentsAndDeliveries")
 public class ShipmentsAndDeliveryResources {
     @Inject
     ShipmentsAndDeliveryService sads;
@@ -99,6 +99,20 @@ public class ShipmentsAndDeliveryResources {
     public void updateRequest(Requests request) { 
     	System.out.println("Попытка обновить отгрузку: \n"+request.toString());
     	sads.updateRequest(request);
+    }
+    
+    @GET
+    @Path("/getRequests")
+    @Produces(MediaType.APPLICATION_JSON)    
+    public Response getRequests(@QueryParam("page") int page){
+        JsonObject json = new JsonObject();
+        json.put("page", page);
+        json.put("per_page", 10);
+        int c = sads.countShipments();
+        json.put("total", c);
+        json.put("total_pages", (int)Math.ceil(c / 4.0));
+        json.put("data", sads.getRequests(page));
+        return Response.ok(json).build();
     }
     
     @GET

@@ -25,7 +25,7 @@ public class OrderService {
     public Orders createOrder(Long clientID) {
     	Orders order = new Orders();
     	order.setClientID(clientID);
-    	order.setStatusID(1); //надо ставить дефолтный статус
+    	order.setStatusID(1l); //надо ставить дефолтный статус
     	
         Date dateNow = new Date();      
     	order.setCreationDate(dateNow);
@@ -76,7 +76,7 @@ public class OrderService {
        Orders order = this.getOrderById(orderID);
 	   Date dateNow = new Date();
 	   order.setLastUpdateOn(dateNow);
-	   order.setStatusID(100);
+	   order.setStatusID(100l);
         //em.remove(order); //реально удалять наверно не надо, выставим статус "удалён"
        // em.flush(); 
     }

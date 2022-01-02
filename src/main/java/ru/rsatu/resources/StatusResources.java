@@ -23,7 +23,7 @@ public class StatusResources {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getStatusById")
-    public Response getStatusById(@QueryParam("id") Integer id){
+    public Response getStatusById(@QueryParam("id") Long id){
         return Response.ok(sr.getStatusById(id)).build();
     }
 

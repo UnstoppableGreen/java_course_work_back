@@ -2,13 +2,11 @@ package ru.rsatu.pojo;
 
 import javax.persistence.*;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+
 @Entity
-@Table(name="status")
-public class Status {
-    @Id
-    @SequenceGenerator(name = "statusSeq", sequenceName = "status_id_seq", allocationSize = 1, initialValue = 1)
-    @GeneratedValue(generator = "statusSeq")
-    private Integer id;
+public class Status extends PanacheEntity {
+
     private String name;
     private String description;
 
@@ -28,7 +26,7 @@ public class Status {
         this.name = name;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 }

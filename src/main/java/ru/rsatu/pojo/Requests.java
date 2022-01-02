@@ -14,7 +14,7 @@ public class Requests extends PanacheEntity {
 	private Long orderID;
 	private Long itemID;
 	private Integer qty;
-	private Integer statusID;
+	private Long statusID;
 	private Long actualSupplierID;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date creationDate;
@@ -40,10 +40,10 @@ public class Requests extends PanacheEntity {
 	public void setQty(Integer qty) {
 		this.qty = qty;
 	}
-	public Integer getStatusID() {
+	public Long getStatusID() {
 		return statusID;
 	}
-	public void setStatusID(int i) {
+	public void setStatusID(Long i) {
 		this.statusID = i;
 	}
 	public Long getActualSupplierID() {

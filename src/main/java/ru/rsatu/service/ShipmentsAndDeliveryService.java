@@ -19,7 +19,7 @@ public class ShipmentsAndDeliveryService {
     ItemService is;
 
     //-----------------------------------------------------------------------------------------------------------
-    // SHIPMENT
+    // SHIPMENTS
     //-----------------------------------------------------------------------------------------------------------
 
     @Transactional
@@ -57,7 +57,7 @@ public class ShipmentsAndDeliveryService {
     }
 
     //-----------------------------------------------------------------------------------------------------------
-    // REQUEST
+    // REQUESTS
     //-----------------------------------------------------------------------------------------------------------
 
     @Transactional
@@ -80,7 +80,7 @@ public class ShipmentsAndDeliveryService {
     		request.setQty(detail.getQty());	
             request.setActualSupplierID(is.getItemById(detail.getItemID()).getDefaultSupplierID());
             request.setCreationDate(dateNow);
-            request.setStatusID(15); //НЕИЗВЕСТНЫЙ СТАТУС ДЛЯ "РЕКВЕСТ СОЗДАН"
+            request.setStatusID(15l); //НЕИЗВЕСТНЫЙ СТАТУС ДЛЯ "РЕКВЕСТ СОЗДАН"
             em.merge(request);
 
     	}

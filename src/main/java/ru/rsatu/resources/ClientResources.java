@@ -14,7 +14,7 @@ import io.vertx.core.json.JsonObject;
 import ru.rsatu.pojo.Clients;
 import ru.rsatu.service.ClientService;
 
-@Path("/client")
+@Path("/clients")
 public class ClientResources {
     @Inject
     ClientService sr;

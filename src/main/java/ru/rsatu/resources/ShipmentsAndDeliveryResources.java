@@ -80,8 +80,19 @@ public class ShipmentsAndDeliveryResources {
         json.put("data", sads.getShipments(page));
         return Response.ok(json).build();
     }
-    
-    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getShipmentById")
+    public Response getShipmentById(@QueryParam("shipmentID") Long shimpentID){
+        return Response.ok(sads.getShipmentById(shimpentID)).build();
+    }
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/deleteShipment")
+    public Response deleteShipment(@QueryParam("shipmentID") Long id){
+        sads.deleteShipment(sads.getShipmentById(id));
+        return Response.ok().build();
+    }
     
     @PUT
     @Path("/newRequest")
@@ -90,6 +101,13 @@ public class ShipmentsAndDeliveryResources {
     public void newRequest(Requests request) {
 	    System.out.println("Попытка добавить запрос к поставщику: \n"+request.toString());   	    	  
 	    sads.insertRequest(request);
+    }
+    @POST
+    @Path("/createRequests")
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void createRequests(Requests request) {   	
+	    sads.createRequests(request);
     }
     
     @PUT
@@ -108,7 +126,7 @@ public class ShipmentsAndDeliveryResources {
         JsonObject json = new JsonObject();
         json.put("page", page);
         json.put("per_page", 10);
-        int c = sads.countShipments();
+        int c = sads.countRequests();
         json.put("total", c);
         json.put("total_pages", (int)Math.ceil(c / 4.0));
         json.put("data", sads.getRequests(page));
@@ -134,6 +152,19 @@ public class ShipmentsAndDeliveryResources {
     	
     	return Response.ok(json).build();
     }
+    @GET
+    @Path("/getRequestById")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRequestById(@QueryParam("requestID") Long requestID) {   	
+    	return Response.ok(sads.getRequestById(requestID)).build();
+    }
+    @POST
+    @Path("/deleteRequest")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteRequest(@QueryParam("requestID") Long requestID) {     	
+    	sads.deleteRequest(requestID);
+    	return Response.ok().build();
+    }
     //-----------------------------------------------------------------------------------------------------------
     // CARRIERS
     //-----------------------------------------------------------------------------------------------------------
@@ -150,6 +181,12 @@ public class ShipmentsAndDeliveryResources {
         json.put("total_pages", (int)Math.ceil(c / 10.0));
         json.put("data", sads.getCarriers(page));
         return Response.ok(json).build();
+    }
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getAllCarriers")
+    public Response getAllCarriers(){
+        return Response.ok(sads.getAllCarriers()).build();
     }
 
     @GET
@@ -182,5 +219,6 @@ public class ShipmentsAndDeliveryResources {
         sads.deleteCarriers(sads.getCarriersById(id));
         return Response.ok().build();
     }
+    
     
 }

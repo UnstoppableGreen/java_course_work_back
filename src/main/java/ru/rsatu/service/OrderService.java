@@ -35,13 +35,13 @@ public class OrderService {
 
     //вставка данных
     @Transactional
-    public Orders insertOrder(Orders order, Boolean createRequests) {   	
+    public Orders insertOrder(Orders order) {  
+    	Date dateNow = new Date();
+    	order.setLastUpdateOn(dateNow);
+    	order.setCreationDate(dateNow);
     	em.merge(order);
         em.flush();
         em.clear();
-        if (createRequests) {
-        	sads.createRequests(order);
-        }
         return order;
     }
     
@@ -86,12 +86,15 @@ public class OrderService {
     }
 
     public int countOrders() {
-        Number ordersQTY = (Number) em.createQuery(" select count(orderID) from Orders ").getResultList().get(0);
+        Number ordersQTY = (Number) em.createQuery(" select count(id) from Orders ").getResultList().get(0);
         return ordersQTY.intValue() ;
     }
 
-    public List<Orders> getOrders(int page) {
-        Query query = em.createQuery(" select c from Orders c where statusID != 100 ");
+    public List<Orders> getOrders(int page) { //" select o from Orders o "
+        Query query = em.createQuery(" select o, c, s from Orders o " +
+                        " inner join Clients c on  c.id = o.clientID " +
+                        " inner join Status s on  s.id = o.statusID " +
+                        " where o.statusID != 100 "); //c.name as client,s.name as status,
         query.setFirstResult((page-1)*4);
         query.setMaxResults(4);
         List<Orders> listOrders = query.getResultList();

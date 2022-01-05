@@ -2,6 +2,8 @@ package ru.rsatu.resources;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 import ru.rsatu.pojo.Items;
 import ru.rsatu.pojo.ItemsDetails;
@@ -38,6 +40,13 @@ public class ItemResources {
         return Response.ok(json).build();
     }
     
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getAllItems")
+    public Response getItems(){
+        return Response.ok(os.getItems()).build();
+    }
+    
     @PUT
     @Path("/newItem")
     @Transactional
@@ -62,14 +71,64 @@ public class ItemResources {
         return os.getAtomicsFromItem(os.getItemById(id),1);
     	
     }
-
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getItemById")
+    public Response getItemById(@QueryParam("itemID") Long itemID){
+        return Response.ok(os.getItemById(itemID)).build();
+    }
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getStructure")
     public Response getStructure(@QueryParam("itemID") Long id){
-        return Response.ok(os.getStructure(os.getItemById(id))).build();
+        return Response.ok(os.getStructure(os.getItemById(id), 1)).build();
     }
-   
+    @POST
+    @Path("/updateItem")
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void updateItem(Items item) { 
+    	System.out.println("Попытка обновить заказ: \n"+item.toString());
+    	for (ItemsDetails detail : item.itemDetails) {
+            System.out.println("Внутри цикла: \n"+detail.toString());
+            detail.item = item;
+            if (detail.id==0) {            	
+            	addDetail(detail, item.id);
+            } else {
+        os.updateDetail(detail);  }               
+    	} 
+    	os.updateItem(item);
+    }
+    
+    
+    @PUT
+    @Path("/addDetail/{itemID}")
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void addDetail(ItemsDetails detail, @PathParam Long itemID) {
+        Items item = os.getItemById(itemID);
+        if (item == null) {
+            return;
+        }
+        ItemsDetails detail1 = new ItemsDetails();
+        detail1.setItemID(detail.getItemID());
+        detail1.setQty(detail.getQty());
+        
+        detail1.item = item;        
+        detail1.persist(); //????
+        
+        item.itemDetails.add(detail1);       
+        item.persist(); //????
+        
+    }
+    
+    /*@GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getItemById")
+    public Response getClientById(@QueryParam("clientID") Long clientID){
+        return Response.ok(sr.getClientById(clientID)).build();
+    }*/
 
 //    @PUT
 //    @Path("/createStructure")

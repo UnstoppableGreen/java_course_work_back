@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
+import ru.rsatu.pojo.Items;
 import ru.rsatu.pojo.Suppliers;
 
 @ApplicationScoped
@@ -60,6 +61,9 @@ public class SuppliersService {
         query.setMaxResults(10);
         List<Suppliers> listSuppliers = query.getResultList();
         return listSuppliers;
+    }
+    public List<Suppliers> getAllSuppliers() {
+        return em.createQuery(" select c from Suppliers c ", Suppliers.class).getResultList();
     }
     public int countSuppliers() {
         Number ordersQTY = (Number) em.createQuery(" select count(id) from Suppliers ").getResultList().get(0);

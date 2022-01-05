@@ -50,13 +50,15 @@ public class ClientService {
         em.flush();
     }
 
-    public List<Clients> getClients() {
-        return em.createQuery(" select c from Clients c ", Clients.class).getResultList();
-    }
-
     public int getCountClients() {
         Number number = (Number) em.createQuery(" select count(name) from Clients ").getResultList().get(0);
         return number.intValue();
+    }
+
+    public List<Clients> getClients() {
+        Query query = em.createQuery(" select c from Clients c ");
+        List<Clients> listClients = query.getResultList();
+        return listClients;
     }
 
     public List<Clients> getClientsPage(int page) {

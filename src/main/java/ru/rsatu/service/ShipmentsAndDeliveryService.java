@@ -1,7 +1,10 @@
 package ru.rsatu.service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -17,6 +20,8 @@ public class ShipmentsAndDeliveryService {
     EntityManager em;
     @Inject
     ItemService is;
+    @Inject
+    OrderService os;
 
     //-----------------------------------------------------------------------------------------------------------
     // SHIPMENTS
@@ -55,6 +60,11 @@ public class ShipmentsAndDeliveryService {
         Number shipmentsQTY = (Number) em.createQuery(" select count(id) from Shipments ").getResultList().get(0);
         return shipmentsQTY.intValue() ;
     }
+    @Transactional
+    public void deleteShipment(Shipments shipment) {
+        em.remove(getShipmentById(shipment.id));
+        em.flush();
+    }
 
     //-----------------------------------------------------------------------------------------------------------
     // REQUESTS
@@ -71,22 +81,39 @@ public class ShipmentsAndDeliveryService {
     }
     
     @Transactional
-    public void createRequests(Orders order) { 
+    public void createRequests(Requests request) {
+    	Orders order = os.getOrderById(request.getOrderID());
     	Date dateNow = new Date();
-    	Requests request = new Requests();
-    	for (OrdersDetails detail : order.orderDetails) { 
-    		request.setOrderID(order.id);
-    		request.setItemID(detail.getItemID());
-    		request.setQty(detail.getQty());	
-            request.setActualSupplierID(is.getItemById(detail.getItemID()).getDefaultSupplierID());
-            request.setCreationDate(dateNow);
-            request.setStatusID(15l); //НЕИЗВЕСТНЫЙ СТАТУС ДЛЯ "РЕКВЕСТ СОЗДАН"
-            em.merge(request);
-
+    	Requests newrequest = new Requests();
+    	List<Items> atomics = new ArrayList<>();
+    	for (OrdersDetails detail : order.orderDetails) {
+    		atomics.addAll(is.getAllAtomicItems(is.getItemById(detail.getItemID()), detail.getQty()));
     	}
+        Map<Items, Integer> countedAtomics = new HashMap<>();
+        for (Items item: atomics) {
+
+            if (countedAtomics.containsKey(item))
+            	countedAtomics.put(item, countedAtomics.get(item) + 1);
+            else
+            	countedAtomics.put(item, 1);
+        }
+        
+        for (Map.Entry<Items, Integer> entry : countedAtomics.entrySet()) {
+    		newrequest.setOrderID(order.id);
+    		newrequest.setItemID(entry.getKey().id);
+    		newrequest.setQty(entry.getValue());	
+    		newrequest.setActualSupplierID(is.getItemById(entry.getKey().id).getDefaultSupplierID());
+    		newrequest.setCreationDate(dateNow);
+    		newrequest.setEstimateDeliveryDate(request.getEstimateDeliveryDate());
+    		newrequest.setStatusID(request.getStatusID()); //НЕИЗВЕСТНЫЙ СТАТУС ДЛЯ "РЕКВЕСТ СОЗДАН"
+            em.merge(newrequest);
+           
+        }
+        
     	em.flush();
         em.clear();   	
     }
+
     
 	public Requests updateRequest(Requests request) {
         em.merge(request);
@@ -107,10 +134,17 @@ public class ShipmentsAndDeliveryService {
         return listRequests;
     }
     
-    public int countRequest() {
+    public int countRequests() {
         Number requestsQTY = (Number) em.createQuery(" select count(id) from Requests ").getResultList().get(0);
         return requestsQTY.intValue() ;
     }
+    @Transactional
+    public void deleteRequest(Long requestID) {
+        em.remove(getRequestById(requestID));
+        em.flush();
+    }
+
+
 
     //-----------------------------------------------------------------------------------------------------------
     // CARRIERS
@@ -153,6 +187,9 @@ public class ShipmentsAndDeliveryService {
         query.setMaxResults(10);
         List<Carriers> listCarriers = query.getResultList();
         return listCarriers;
+    }
+    public List<Carriers> getAllCarriers() {
+       return em.createQuery(" select s from Carriers s ", Carriers.class).getResultList();
     }
     public int countCarriers() {
         Number carQTY = (Number) em.createQuery(" select count(id) from Carriers ").getResultList().get(0);

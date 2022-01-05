@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 
-@Path("/supplier")
+@Path("/suppliers")
 public class SuppliersResources {
     @Inject
     SuppliersService ss;
@@ -27,6 +27,12 @@ public class SuppliersResources {
         json.put("total_pages", (int)Math.ceil(c / 10.0));
         json.put("data", ss.getSuppliers(page));
         return Response.ok(json).build();
+    }
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getAllSuppliers")
+    public Response getAllSuppliers(){
+        return Response.ok(ss.getAllSuppliers()).build();
     }
 
     @GET

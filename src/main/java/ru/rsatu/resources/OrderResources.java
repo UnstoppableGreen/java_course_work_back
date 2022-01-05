@@ -44,7 +44,7 @@ public class OrderResources {
     public Response getOrders(@QueryParam("page") int page){
         JsonObject json = new JsonObject();
         json.put("page", page);
-        json.put("per_page", 10);
+        json.put("per_page", 4);
         int c = os.countOrders();
         json.put("total", c);
         json.put("total_pages", (int)Math.ceil(c / 4.0));
@@ -54,7 +54,7 @@ public class OrderResources {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getOrders")
+    @Path("/getAllOrders")
     public Response getOrders(){
         return Response.ok(os.getOrders()).build();
     }
@@ -97,7 +97,7 @@ public class OrderResources {
     	//JsonObject itemsStructures = new JsonObject();    	    	
     	for (OrdersDetails detail : order.orderDetails) {
     		System.out.println("Смотрим струкуру итема: \n"+is.getItemById(detail.getItemID()));
-    		itemsStructures.add(is.getStructure (is.getItemById(detail.getItemID())));
+    		itemsStructures.add(is.getStructure (is.getItemById(detail.getItemID()),detail.getQty()));
     		
     	}
     	json.put("itemsStructures", itemsStructures);
@@ -109,14 +109,14 @@ public class OrderResources {
     @Path("/newOrder")
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
-    public void newOrder(Orders order, @QueryParam("createRequest") Boolean createRequests) {
+    public void newOrder(Orders order) {
     	System.out.println("Попытка добавить заказ: \n"+order.toString());
     	    	 
     	for (OrdersDetails detail : order.orderDetails) {                    
             System.out.println("Внутри цикла: \n"+detail.toString());
             detail.order = order; 
     	} 
-    os.insertOrder(order,createRequests);
+    os.insertOrder(order);
     }
    
     @PUT
@@ -155,10 +155,10 @@ public class OrderResources {
     }
 
     
-    @PUT
+    @POST
     @Path("/updateOrder")
     @Transactional
-    @Consumes(MediaType.APPLICATION_JSON)
+    //@Consumes(MediaType.APPLICATION_JSON)
     public void updateOrder(Orders order) { 
     	System.out.println("Попытка обновить заказ: \n"+order.toString());
     	for (OrdersDetails detail : order.orderDetails) {

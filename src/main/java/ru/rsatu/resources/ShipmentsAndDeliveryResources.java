@@ -191,31 +191,31 @@ public class ShipmentsAndDeliveryResources {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getCarriersById")
-    public Response getCarriersById(@QueryParam("id") Long id){
+    @Path("/getCarrierById")
+    public Response getCarriersById(@QueryParam("carrierID") Long id){
         return Response.ok(sads.getCarriersById(id)).build();
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/insertCarriers")
+    @Path("/createCarrier")
     public Response insertSupplier(Carriers car){
         return Response.ok(sads.insertCarriers(car)).build();
     }
 
-    @POST
+    @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/updateCarriers")
+    @Path("/updateCarrier")
     public Response updateSupplier(Carriers carriers){
         return Response.ok(sads.updateCarriers(carriers)).build();
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/deleteCarriers")
-    public Response deleteCarriers(@QueryParam("id") Long id){
+    @Path("/deleteCarrier")
+    public Response deleteCarriers(@QueryParam("carrierID") Long id){
         sads.deleteCarriers(sads.getCarriersById(id));
         return Response.ok().build();
     }

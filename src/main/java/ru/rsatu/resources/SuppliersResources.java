@@ -38,19 +38,19 @@ public class SuppliersResources {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getSupplierById")
-    public Response getSupplierById(@QueryParam("id") Long id){
+    public Response getSupplierById(@QueryParam("supplierID") Long id){
         return Response.ok(ss.getSupplierById(id)).build();
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/insertSupplier")
+    @Path("/createSupplier")
     public Response insertSupplier(Suppliers s){
         return Response.ok(ss.insertSupplier(s)).build();
     }
 
-    @POST
+    @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/updateSupplier")
@@ -61,7 +61,7 @@ public class SuppliersResources {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/deleteSupplier")
-    public Response deleteSupplier(@QueryParam("id") Long id){
+    public Response deleteSupplier(@QueryParam("supplierID") Long id){
         ss.deleteSupplier(ss.getSupplierById(id));
         return Response.ok().build();
     }

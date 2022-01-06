@@ -92,8 +92,8 @@ public class OrderService {
 
     public List<Orders> getOrders(int page) { //" select o from Orders o "
         Query query = em.createQuery(" select o, c, s from Orders o " +
-                        " inner join Clients c on  c.id = o.clientID " +
-                        " inner join Status s on  s.id = o.statusID " +
+                        " left join Clients c on  c.id = o.clientID " +
+                        " left join Status s on  s.id = o.statusID " +
                         " where o.statusID != 100 "); //c.name as client,s.name as status,
         query.setFirstResult((page-1)*4);
         query.setMaxResults(4);
